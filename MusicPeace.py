@@ -1,7 +1,6 @@
 from music21 import interval
 from MusicNote import MusicNote
 from GeneticAlgortihm import generate_scale_tone
-import random
 
 
 class MusicPeace(object):
