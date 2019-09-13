@@ -365,40 +365,5 @@ def generate_scale_tone_mutation(parent):
     return final_note
 
 
-def generate_scale_tone(notes: [], count):
-    items = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C#', 'D#', 'F#', 'G#', 'A#']
-
-    rand_item = items[random.randrange(len(items))]
-
-    scales = scale.MajorScale(rand_item)
-
-    all_pitches = list(set([pitch for pitch in scales.getPitches()]))
-    all_note_names = [i.name for i in all_pitches]
-
-    note_name = random.choice(all_note_names)
-
-    final_note = Note(note_name)
-
-    duration_list = [1, 1 / 2]
-
-    if not notes:
-        final_note.duration.quarterLength = random.choice(duration_list)
-        return final_note
-
-    try:
-        if notes[count - 1].duration.quarterLength == 1 / 2 and notes[count - 2].duration.quarterLength != 1 / 2:
-            final_note.duration.quarterLength = 1 / 2
-            return final_note
-    except:
-        if count == 0:
-            final_note.duration.quarterLength = 1 / 2
-            return final_note
-        else:
-            pass
-    else:
-        final_note.duration.quarterLength = random.choice(duration_list)
-        return final_note
-
-
 if __name__ == '__main__':
     main()
