@@ -10,35 +10,39 @@ from music21 import scale
 from music21.note import Note, Rest
 
 
-def main():
-    setup_environment()
+def genetic_algorithm(attempts, initial_population):
+    population = initial_population
 
-    initial_population = MusicPeace.MusicPeace(4)  # amount of bars in melody G dur scale
+    evaluate_fitness(population)
 
-    final_population = genetic_algorithm(100, initial_population.all_notes)
+    count = 0
+    while count != attempts:
+        counter = 0
+        population_temp = copy.copy(population)
 
-    s1 = stream.Stream()
-    for n in final_population:
-        s1.append(n.music_note)
-    s1.show()
+        while counter != 1:  # number of notes to be eliminated
 
-    print("End")
+            eliminated_note = tournament_selection(population_temp, len(population_temp))
 
+            new_note = mutate(eliminated_note)
 
-def setup_environment():
-    if platform.system() == "Windows":
-        path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop\\Notes\\')
-    else:
-        path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop/Notes')
-    if not os.path.exists(path) or not os.path.isdir(path):
-        try:
-            os.mkdir(path)
-        except OSError:
-            print("Creation of the directory %s failed" % path)
-        else:
-            print("Successfully created the directory %s " % path)
+            altered_note = MusicNote.MusicNote(new_note, 0, None, eliminated_note.location,
+                                               eliminated_note.is_last_note_of_melody)
 
-    environment.set('directoryScratch', path)
+            population[eliminated_note.location] = altered_note
+
+            counter = counter + 1
+
+        recalculate_intervals(population)
+        evaluate_fitness(population)
+
+        average_fitness = calculate_average_fitness(population)
+        print(average_fitness)
+        print(count)
+
+        count += 1
+    add_rests(0.05, population)
+    return population
 
 
 def evaluate_fitness(population: [MusicNote]):
@@ -94,7 +98,6 @@ def calculate_rest_proportion(population):
         return counter / len(population)
 
 
-# drastic proportion change fitness function
 def drastic_duration_change_fitness_function(note1, note2):
     proportion = note1.music_note.duration.quarterLength / note2.music_note.duration.quarterLength
 
@@ -104,7 +107,6 @@ def drastic_duration_change_fitness_function(note1, note2):
         return 1
 
 
-# degree fitness function
 def degree_fitness(note1: MusicNote, note2: MusicNote):
     chosen_scale = scale.MajorScale('G')
     degree1 = chosen_scale.getScaleDegreeFromPitch(note1.music_note.pitch)
@@ -132,7 +134,13 @@ def get_root_pitch(song_scale):
     return all_note_names[0]
 
 
-# first and eight note fitness so it start in tonic and end in tonic
+def get_scale_pitches(scale_local):
+    scale_pitches = []
+    for p in scale_local.pitches:
+        scale_pitches.append(p)
+    return scale_pitches
+
+
 def first_or_last_note_fitness(first_note: MusicNote, song_scale):
     if first_note.music_note.pitch.name == get_root_pitch(song_scale):
         return 1
@@ -140,7 +148,6 @@ def first_or_last_note_fitness(first_note: MusicNote, song_scale):
         return 0
 
 
-# melody direction fitness function
 def assign_melody_direction_fitness(note1: MusicNote, note2: MusicNote, note3: MusicNote):
     if note3 is None:
         return
@@ -187,7 +194,6 @@ def fitness_melody_direction(note1: MusicNote,
         return 0.2
 
 
-# step relationship of two notes fitness function
 def notes_relationship(note_one, note_two):
     one_step_relationship = one_step(note_one.music_note, note_two.music_note)
     two_step_relationship = two_steps(note_one.music_note, note_two.music_note)
@@ -222,41 +228,6 @@ def same_distance(note_one, note_two):
         return 0.2
     else:
         return 0
-
-
-def genetic_algorithm(attempts, initial_population):
-    population = initial_population
-
-    evaluate_fitness(population)
-
-    count = 0
-    while count != attempts:
-        counter = 0
-        population_temp = copy.copy(population)
-
-        while counter != 1:  # number of notes to be eliminated
-
-            eliminated_note = tournament_selection(population_temp, len(population_temp))
-
-            new_note = mutate(eliminated_note)
-
-            altered_note = MusicNote.MusicNote(new_note, 0, None, eliminated_note.location,
-                                               eliminated_note.is_last_note_of_melody)
-
-            population[eliminated_note.location] = altered_note
-
-            counter = counter + 1
-
-        recalculate_intervals(population)
-        evaluate_fitness(population)
-
-        average_fitness = calculate_average_fitness(population)
-        print(average_fitness)
-        print(count)
-
-        count += 1
-    add_rests(0.05, population)
-    return population
 
 
 def calculate_average_fitness(population: [MusicNote]):
@@ -319,11 +290,18 @@ def mutate(parent):
     return parent.music_note
 
 
-def get_scale_pitches(scale_local):
-    scale_pitches = []
-    for p in scale_local.pitches:
-        scale_pitches.append(p)
-    return scale_pitches
+def generate_scale_tone_mutation(parent):
+    scales = scale.MajorScale('G')
+
+    all_pitches = list(set([pitch for pitch in scales.getPitches()]))
+    all_note_names = [i.name for i in all_pitches]
+
+    note_name = random.choice(all_note_names)
+
+    final_note = Note(note_name)
+
+    final_note.duration.quarterLength = parent.music_note.duration.quarterLength
+    return final_note
 
 
 def tournament_selection(population: [MusicNote], population_size):
@@ -351,18 +329,35 @@ def tournament_selection(population: [MusicNote], population_size):
     return worst
 
 
-def generate_scale_tone_mutation(parent):
-    scales = scale.MajorScale('G')
+def main():
+    setup_environment()
 
-    all_pitches = list(set([pitch for pitch in scales.getPitches()]))
-    all_note_names = [i.name for i in all_pitches]
+    initial_population = MusicPeace.MusicPeace(4)  # amount of bars in melody G dur scale
 
-    note_name = random.choice(all_note_names)
+    final_population = genetic_algorithm(100, initial_population.all_notes)
 
-    final_note = Note(note_name)
+    s1 = stream.Stream()
+    for n in final_population:
+        s1.append(n.music_note)
+    s1.show()
 
-    final_note.duration.quarterLength = parent.music_note.duration.quarterLength
-    return final_note
+    print("End")
+
+
+def setup_environment():
+    if platform.system() == "Windows":
+        path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop\\Notes\\')
+    else:
+        path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop/Notes')
+    if not os.path.exists(path) or not os.path.isdir(path):
+        try:
+            os.mkdir(path)
+        except OSError:
+            print("Creation of the directory %s failed" % path)
+        else:
+            print("Successfully created the directory %s " % path)
+
+    environment.set('directoryScratch', path)
 
 
 if __name__ == '__main__':
