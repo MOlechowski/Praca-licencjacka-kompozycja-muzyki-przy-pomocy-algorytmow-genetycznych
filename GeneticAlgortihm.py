@@ -15,7 +15,7 @@ def main():
 
     initial_population = MusicPeace.MusicPeace(4)  # amount of bars in melody G dur scale
 
-    final_population = genetic_algorithm(1000, initial_population.all_notes)
+    final_population = genetic_algorithm(100, initial_population.all_notes)
 
     s1 = stream.Stream()
     for n in final_population:
