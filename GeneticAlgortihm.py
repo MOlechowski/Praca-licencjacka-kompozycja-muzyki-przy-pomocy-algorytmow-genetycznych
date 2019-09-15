@@ -37,11 +37,11 @@ def genetic_algorithm(attempts, initial_population):
         evaluate_fitness(population)
 
         average_fitness = calculate_average_fitness(population)
-        print(average_fitness)
-        print(count)
+        print("Generation: {0}".format(count), end="\r", flush=True)
 
         count += 1
     add_rests(0.05, population)
+    print("Generations run: {0}, with total average fitness of {1}".format(count, average_fitness))
     return population
 
 
@@ -336,12 +336,13 @@ def main():
 
     final_population = genetic_algorithm(100, initial_population.all_notes)
 
-    s1 = stream.Stream()
-    for n in final_population:
-        s1.append(n.music_note)
-    s1.show()
-
-    print("End")
+    try:
+        s1 = stream.Stream()
+        for n in final_population:
+            s1.append(n.music_note)
+        s1.show()
+    except:
+        print("To display notes muse score software is required please install it from here: https://musescore.org/en")
 
 
 def setup_environment():
