@@ -11,7 +11,7 @@ class MusicNote(object):
 
     def __init__(self, music_note: Note, fitness_score: 0.0, note_interval, location, is_last=False):
         self.note_interval = note_interval
-        self.music_note: Note = music_note
+        self.music_note = music_note
         self.fitness_score = fitness_score
         self.location = location
         if location == 0:
