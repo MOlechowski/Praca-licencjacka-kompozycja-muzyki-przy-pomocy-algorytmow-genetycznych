@@ -175,12 +175,12 @@ def assign_melody_direction_fitness(note1: MusicNote, note2: MusicNote, note3: M
         return
     if note2 is None:
         return
-    return fitness_melody_direction2(note1, note2)
+    return fitness_melody_direction_two_notes(note1, note2)
 
 
-def fitness_melody_direction2(note1: MusicNote,
-                              note2: MusicNote
-                              ):
+def fitness_melody_direction_two_notes(note1: MusicNote,
+                                       note2: MusicNote
+                                       ):
     if note1.note_interval.direction == 1 and note2.note_interval.direction == 1:
         return 1
 
