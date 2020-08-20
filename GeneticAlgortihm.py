@@ -371,7 +371,7 @@ def tournament_selection(population: [MusicNote], population_size):
 
 def main():
     setup_environment()
-
+    setup_environment
     initial_population = MusicPeace.MusicPeace(4)  # amount of bars in melody G dur scale
 
     # evaluate_one_step = True
@@ -407,7 +407,7 @@ def setup_environment():
         path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop/Notes')
     if not os.path.exists(path) or not os.path.isdir(path):
         try:
-            os.mkdir(path)
+            os.makedirs(path)
         except OSError:
             print("Creation of the directory %s failed" % path)
         else:
