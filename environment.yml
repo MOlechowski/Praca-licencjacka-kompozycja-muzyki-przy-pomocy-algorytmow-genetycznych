@@ -7,6 +7,3 @@ channels:
 dependencies:
   - numpy
   - matplotlib
-  - snapd
-  - music21
-  - musescore
