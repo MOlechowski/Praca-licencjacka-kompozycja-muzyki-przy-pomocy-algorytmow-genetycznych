@@ -1,8 +1,12 @@
 name: root
 channels:
   - defaults
+  - rmg
+  - rdkit
+  - cantera
 dependencies:
   - numpy
   - matplotlib
   - snapd
   - music21
+  - musescore
