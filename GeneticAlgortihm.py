@@ -369,9 +369,27 @@ def tournament_selection(population: [MusicNote], population_size):
     return worst
 
 
+def setup_environment():
+    if platform.system() == "Windows":
+        path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop\\Notes\\')
+    else:
+        path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop/Notes')
+    if not os.path.exists(path) or not os.path.isdir(path):
+        try:
+            os.makedirs(path)
+        except OSError:
+            print("Creation of the directory %s failed" % path)
+        else:
+            print("Successfully created the directory %s " % path)
+
+    if platform.system == "Linux":
+        environment.set('musescoreDirectPNGPath', "/usr/bin/mscore")
+
+    environment.set('directoryScratch', path)
+
+
 def main():
     setup_environment()
-    setup_environment
     initial_population = MusicPeace.MusicPeace(4)  # amount of bars in melody G dur scale
 
     # evaluate_one_step = True
@@ -398,22 +416,6 @@ def main():
         s1.show()
     except Exception as e:
         print("Unexpected error:", str(e))
-
-
-def setup_environment():
-    if platform.system() == "Windows":
-        path = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop\\Notes\\')
-    else:
-        path = os.path.join(os.path.join(os.path.expanduser('~')), 'Desktop/Notes')
-    if not os.path.exists(path) or not os.path.isdir(path):
-        try:
-            os.makedirs(path)
-        except OSError:
-            print("Creation of the directory %s failed" % path)
-        else:
-            print("Successfully created the directory %s " % path)
-
-    environment.set('directoryScratch', path)
 
 
 if __name__ == '__main__':
