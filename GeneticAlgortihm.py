@@ -396,8 +396,8 @@ def main():
         for n in final_population:
             s1.append(n.music_note)
         s1.show()
-    except:
-        print("To display notes muse score software is required please install it from here: https://musescore.org/en")
+    except Exception as e:
+        print("Unexpected error:", str(e))
 
 
 def setup_environment():
