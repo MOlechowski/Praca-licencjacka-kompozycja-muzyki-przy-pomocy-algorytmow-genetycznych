@@ -1,3 +1,5 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MOlechowski/Praca-licencjacka-kompozycja-muzyki-przy-pomocy-algorytmow-genetycznych/master)
+
 # Praca licencjacka kompozycja muzyki przy pomocy algorytmów genetycznych
 
 Repozytorium zawiera kod stworzony na potrzeby pracy licencjackiej kompozycja muzyki przy pomocy algorytmów genetycznych . Do uruchomienia programu potrzebny jest Python w wersji 3.6.1 lub wyższej.
