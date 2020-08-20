@@ -1,4 +1,4 @@
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MOlechowski/Praca-licencjacka-kompozycja-muzyki-przy-pomocy-algorytmow-genetycznych/master/?urlpath=/tree/Kompozycja melodii przy pomocy algorytmu genetycznego..ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MOlechowski/Praca-licencjacka-kompozycja-muzyki-przy-pomocy-algorytmow-genetycznych/master/?urlpath=/tree/Kompozycja%melodii%przy%pomocy%algorytmu%genetycznego..ipynb)
 
 # Praca licencjacka kompozycja muzyki przy pomocy algorytmów genetycznych
 
