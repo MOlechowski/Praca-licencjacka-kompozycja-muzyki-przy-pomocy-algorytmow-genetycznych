@@ -414,6 +414,7 @@ def main():
         for n in final_population:
             s1.append(n.music_note)
         s1.show()
+        s1.show('midi')
     except Exception as e:
         print("Unexpected error:", str(e))
 
