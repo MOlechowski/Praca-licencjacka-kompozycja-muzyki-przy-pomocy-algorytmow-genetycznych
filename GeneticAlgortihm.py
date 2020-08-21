@@ -382,31 +382,30 @@ def setup_environment():
 
     if platform.system() == "Linux":
         environment.set('musescoreDirectPNGPath', "/usr/bin/musescore")
-        environment.set('musicxmlPath',"/usr/bin/musescore")
+        environment.set('musicxmlPath', "/usr/bin/musescore")
 
     environment.set('directoryScratch', path)
-
-
 
 
 def main():
     setup_environment()
     initial_population = MusicPeace.MusicPeace(4)  # amount of bars in melody G dur scale
 
+    # NotesRelationshipConfig
     # evaluate_one_step = True
     # evaluate_two_steps = True
     # evaluate_three_steps = True
     # evaluate_same_distance = True
-    # notes_relationship_config = NotesRelationshipConfig(True, True, True, True)
+    notes_relationship_config = NotesRelationshipConfig.NotesRelationshipConfig(True, True, True, True)
 
+    # AlgorithmConfig
     # evaluate_degree = True
     # evaluate_drastic_duration_change = True
     # evaluate_note_melody_direction = True
     # evaluate_first_or_last_note = True
+    # NotesRelationshipConfig()
 
-    config = AlgorithmConfig.AlgorithmConfig(True, True, True, True,
-                                             NotesRelationshipConfig.NotesRelationshipConfig(True, True, True,
-                                                                                             True))
+    config = AlgorithmConfig.AlgorithmConfig(True, True, True, True, notes_relationship_config)
 
     final_population = genetic_algorithm(1000, initial_population.all_notes, config)
 
