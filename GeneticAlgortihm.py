@@ -131,12 +131,14 @@ def drastic_duration_change_fitness_function(note1, note2):
 
 def degree_fitness(note1: MusicNote, note2: MusicNote):
     chosen_scale = scale.MajorScale('G')
-    degree1 = chosen_scale.getScaleDegreeFromPitch(note1.music_note.pitch)
-    degree2 = chosen_scale.getScaleDegreeFromPitch(note2.music_note.pitch)
 
-    if degree1 is None:
-        return 0.2
-    if degree2 is None:
+    note1_pitch = note1.music_note.pitch
+    note2_pitch = note2.music_note.pitch
+
+    degree1 = chosen_scale.getScaleDegreeFromPitch(note1_pitch)
+    degree2 = chosen_scale.getScaleDegreeFromPitch(note2_pitch)
+
+    if degree1 is None or degree2 is None:
         return 0.2
 
     if degree1 > degree2:
@@ -164,7 +166,8 @@ def get_scale_pitches(scale_local):
 
 
 def first_or_last_note_fitness(first_note: MusicNote, song_scale):
-    if first_note.music_note.pitch.name == get_root_pitch(song_scale):
+    if first_note.music_note.pitch.name \
+            == get_root_pitch(song_scale):
         return 1
     else:
         return 0
@@ -242,29 +245,29 @@ def notes_relationship(note_one, note_two, config: NotesRelationshipConfig):
         return -1
 
 
-def one_step(note_one, note_two):
-    if interval.notesToGeneric(note_one, note_two) == 'M2' or 'm2':
+def one_step(note1, note2):
+    if interval.notesToGeneric(note1, note2) == 'M2' or 'm2':
         return 0.7
     else:
         return 0
 
 
-def two_steps(note_one, note_two):
-    if interval.notesToGeneric(note_one, note_two) == 'M3' or 'm3':
+def two_steps(note1, note2):
+    if interval.notesToGeneric(note1, note2) == 'M3' or 'm3':
         return 1
     else:
         return 0
 
 
-def three_steps(note_one, note_two):
-    if interval.notesToGeneric(note_one, note_two) == 'P4' or 'A4':
+def three_steps(note1, note2):
+    if interval.notesToGeneric(note1, note2) == 'P4' or 'A4':
         return 0.8
     else:
         return 0
 
 
-def same_distance(note_one, note_two):
-    if interval.notesToGeneric(note_one, note_two) == 'P1':
+def same_distance(note1, note2):
+    if interval.notesToGeneric(note1, note2) == 'P1':
         return 0.2
     else:
         return 1
@@ -344,7 +347,7 @@ def generate_scale_tone_mutation(parent):
     return final_note
 
 
-def tournament_selection(population: [MusicNote], population_size):
+def tournament_selection(population, population_size):
     worst = None
     i = 1
 
@@ -396,7 +399,8 @@ def main():
     # evaluate_two_steps = True
     # evaluate_three_steps = True
     # evaluate_same_distance = True
-    notes_relationship_config = NotesRelationshipConfig.NotesRelationshipConfig(True, True, True, True)
+    notes_config = NotesRelationshipConfig.NotesRelationshipConfig(True, True,
+                                                                   True, True)
 
     # AlgorithmConfig
     # evaluate_degree = True
@@ -405,13 +409,16 @@ def main():
     # evaluate_first_or_last_note = True
     # NotesRelationshipConfig()
 
-    config = AlgorithmConfig.AlgorithmConfig(True, True, True, True, notes_relationship_config)
+    config = AlgorithmConfig.AlgorithmConfig(True, True, True, True,
+                                             notes_config)
 
-    final_population = genetic_algorithm(1000, initial_population.all_notes, config)
+    final_pop = genetic_algorithm(1000,
+                                  initial_population.all_notes,
+                                  config)
 
     try:
         s1 = stream.Stream()
-        for n in final_population:
+        for n in final_pop:
             s1.append(n.music_note)
         s1.show()
         s1.show('midi')
